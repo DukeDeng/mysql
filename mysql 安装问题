@@ -1,0 +1,49 @@
+一、MySQL 服务无法启动。 服务没有报告任何错误。
+https://jingyan.baidu.com/article/da1091fb1a46a6027849d6a8.html
+
+执行：
+mysqld  --initialize-insecure，自动创建data 文件夹
+
+有的教程要求执行
+mysqld  --initialize，这样会报错，提示没有data文件，然后手动创建一个，data，这个是错误的。。
+
+（1）.由于MySQL5.7在安装完后，第一次启动时，会在root目录下生产一个随机的密码，文件名为 .mysql_secret ----- 这里windows 找不到这个文件
+所以，登录时需要用随机密码登录，然后通过以下命令修改密码 
+“SET PASSWORD = PASSWORD(‘new password’);”
+
+（2）. 在忘记root密码的时候， 只能用这一个方式
+以windows为例：
+1. 关闭正在运行的MySQL服务。
+2. 打开DOS窗口，转到mysql\bin目录
+3. 输入mysqld --skip-grant-tables 回车
+--skip-grant-tables 的意思是启动MySQL服务的时候跳过权限表认证。
+4. 再开一个DOS窗口（因为刚才那个DOS窗口已经不能动了），转到mysql\bin目录。
+5. 输入mysql回车，如果成功，将出现MySQL提示符 >.
+6. 连接权限数据库： use mysql;  （别忘了最后加分号） .
+7. 改密码：update user set password=password（“123”） where user=“root”; （别忘了最后加分号） .
+如果修改密码出现
+**mysql修改密码错误 ERROR 1054 （42S22）**
+则使用 mysql>update mysql.user set authentication_string=password（‘123456’） where user='root' and Host ='localhost';
+或者 update MySQL.user set password=PASSWORD（‘123456’） where User='root';
+8. mysql>flush privileges;   #更新权限
+9. 退出 quit.
+10. 注销系统，再进入，
+输入 mysql -u root -p
+使用用户名root和刚才设置的新密码123456登录。
+
+
+红色的片段，有语法错误，修改后正确的语法
+Fqrcp489XE
+update mysql.user set authentication_string=password('Mysql116979791,') where user='root' and Host ='localhost';
+-- 修改密碼
+update mysql.user set authentication_string=password('Fqrcp489XE') where user='root' and Host ='localhost';
+第二天启动任然报错。。按照解决办法
+https://blog.csdn.net/lianzhang861/article/details/78919060
+启动正常
+
+第三次，无论如何都无法启动MySQL
+后来在“控制面板\所有控制面板项\管理工具” 中服务中看到mysql 没有启动。。启动就可以了
+有个mysql 57 的正在启动，关闭就可以启动mysql 了。。
+
+然后有报错了。
+https://blog.csdn.net/qq_26525215/article/details/53424152

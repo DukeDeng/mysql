@@ -1,0 +1,19 @@
+### MySQL去除重复数据，保留一条
+```
+DELETE FROM 表名 WHERE (字段1,字段2,字段3)
+IN 
+(SELECT 字段1,字段2,字段3 FROM (SELECT 字段1,字段2,字段3 FROM 表名 GROUP BY 字段1,字段2,字段3 HAVING COUNT(*)>1) s1) 
+AND
+id NOT IN (SELECT id FROM (SELECT id FROM 表名 GROUP BY 字段1,字段2,字段3 HAVING COUNT(*)>1) s2);
+```
+---
+#### 实际运用
+```
+DELETE FROM data_hash_amount WHERE (create_time,channel)
+IN
+(SELECT create_time,channel FROM (
+                                 SELECT create_time,channel FROM data_hash_amount
+where 1=1 GROUP BY create_time, channel HAVING COUNT(*)>1) s1)
+AND
+id NOT IN (SELECT id FROM (SELECT id FROM data_hash_amount where 1=1 GROUP BY create_time, channel HAVING COUNT(*)>1) s2);
+```
